@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/ui/helpers/loader.dart';
 import '../../core/ui/helpers/messages.dart';
 import '../../core/ui/helpers/size_extensions.dart';
+import '../../core/ui/styles/colors_app.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> with Loader, Messages {
               context.screenWidth.toString(),
             ),
             Container(
-              color: Colors.amber,
+              color: context.colors.primary,
               height: context.percentHeight(.9),
               width: context.percentWidth(.5),
             )
