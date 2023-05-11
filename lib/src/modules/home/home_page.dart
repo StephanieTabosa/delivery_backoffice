@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/ui/helpers/loader.dart';
 import '../../core/ui/helpers/messages.dart';
-import '../../core/ui/helpers/size_extensions.dart';
-import '../../core/ui/styles/app_colors.dart';
 import '../../core/ui/styles/app_text_styles.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,23 +18,30 @@ class _HomePageState extends State<HomePage> with Loader, Messages {
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
-      body: Container(
-        child: Stack(
-          children: [
-            Text(
-              context.screenWidth.toString(),
+      body: Column(
+        children: [
+          Text(
+            'Text extra bold',
+            style: context.appTextStyles.textTitle,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: TextFormField(
+                decoration: const InputDecoration(
+                  label: Text('Login'),
+                ),
+                validator: (String) => 'Erro',
+              ),
             ),
-            Container(
-              color: context.colors.primary,
-              height: context.percentHeight(.9),
-              width: context.percentWidth(.5),
-            ),
-            Text(
-              'Text extra bold',
-              style: context.appTextStyles.textTitle,
-            )
-          ],
-        ),
+          ),
+          SizedBox(
+            height: 52,
+            width: 220,
+            child: ElevatedButton(onPressed: () {}, child: const Text('Botão')),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
