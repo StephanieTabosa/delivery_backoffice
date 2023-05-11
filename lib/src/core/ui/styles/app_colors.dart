@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class ColorsApp {
-  static ColorsApp? _instance;
+class AppColors {
+  static AppColors? _instance;
 
-  ColorsApp._();
+  AppColors._();
 
-  static ColorsApp get instance {
-    _instance ??= ColorsApp._();
+  static AppColors get instance {
+    _instance ??= AppColors._();
     return _instance!;
   }
 
@@ -16,5 +16,5 @@ class ColorsApp {
 }
 
 extension ColorsAppExtension on BuildContext {
-  ColorsApp get colors => ColorsApp.instance;
+  AppColors get colors => AppColors.instance;
 }
