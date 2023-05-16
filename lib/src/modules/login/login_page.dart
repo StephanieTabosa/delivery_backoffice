@@ -36,6 +36,12 @@ class LoginPage extends StatelessWidget {
             width: screenShortestSide * .5,
             child: Image.asset('assets/images/logo.png'),
           ),
+          Opacity(
+            opacity: 0.5,
+            child: Container(
+              color: context.colors.black,
+            ),
+          ),
           Align(
             alignment: Alignment.center,
             child: Container(
