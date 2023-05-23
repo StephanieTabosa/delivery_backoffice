@@ -1,10 +1,13 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import './modules/home/home_page.dart';
 import 'modules/login/login_module.dart';
+import 'modules/shared/shared_module.dart';
 
 class AppModule extends Module {
   @override
-  List<Bind> get binds => [];
+  List<Module> get imports => [
+        SharedModule(),
+      ];
 
   @override
   List<ModularRoute> get routes => [

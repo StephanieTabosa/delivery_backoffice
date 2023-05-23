@@ -15,6 +15,7 @@ class AppWidget extends StatelessWidget {
       theme: ThemeConfig.theme,
       routeInformationParser: Modular.routeInformationParser,
       routerDelegate: Modular.routerDelegate,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
