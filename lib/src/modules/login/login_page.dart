@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:mobx/mobx.dart';
+import 'package:validatorless/validatorless.dart';
 
+import '../../core/ui/helpers/loader.dart';
+import '../../core/ui/helpers/messages.dart';
 import '../../core/ui/helpers/size_extensions.dart';
 import '../../core/ui/styles/app_colors.dart';
 import '../../core/ui/styles/app_text_styles.dart';
+import 'login_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -11,7 +17,54 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with Loader, Messages {
+  final emailEC = TextEditingController();
+  final passwordEC = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  final controller = Modular.get<LoginController>();
+
+  late final ReactionDisposer statusReactionDisposer;
+
+  bool obscureText = true;
+
+  @override
+  void initState() {
+    statusReactionDisposer = reaction((_) => controller.loginStatus, (status) {
+      switch (status) {
+        case LoginStateStatus.initial:
+          break;
+        case LoginStateStatus.loading:
+          showLoader();
+          break;
+        case LoginStateStatus.success:
+          hideLoader();
+          Modular.to.navigate('/');
+          break;
+        case LoginStateStatus.failure:
+          hideLoader();
+          showError(controller.errorMessage ?? 'Ocorreu um erro');
+          break;
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailEC.dispose();
+    passwordEC.dispose();
+    statusReactionDisposer();
+    super.dispose();
+  }
+
+  void _formSubmit() {
+    final formValid = formKey.currentState?.validate() ?? false;
+    if (formValid) {
+      controller.login(emailEC.text, passwordEC.text);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenShortestSide = context.screenShortestSide;
@@ -19,98 +72,121 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       backgroundColor: context.colors.black,
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: screenShortestSide * .5,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(
-                    'assets/images/lanche.png',
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: context.percentHeight(.10)),
-            width: screenShortestSide * .5,
-            child: Image.asset('assets/images/logo.png'),
-          ),
-          Opacity(
-            opacity: 0.5,
-            child: Container(
-              color: context.colors.black,
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: context.percentWidth(screenWidth < 1300 ? .7 : .3),
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FractionallySizedBox(
-                        widthFactor: .3,
-                        child: Image.asset('assets/images/logo.png'),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          'Login',
-                          style: context.appTextStyles.textTitle,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'E-mail',
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Senha',
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('Entrar'),
-                        ),
-                      ),
-                    ],
+      body: Form(
+        key: formKey,
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                height: screenShortestSide * .5,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      'assets/images/lanche.png',
+                    ),
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+            Container(
+              padding: EdgeInsets.only(top: context.percentHeight(.10)),
+              width: screenShortestSide * .5,
+              child: Image.asset('assets/images/logo.png'),
+            ),
+            Opacity(
+              opacity: 0.5,
+              child: Container(
+                color: context.colors.black,
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: context.percentWidth(screenWidth < 1300 ? .7 : .3),
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FractionallySizedBox(
+                          widthFactor: .3,
+                          child: Image.asset('assets/images/logo.png'),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            'Login',
+                            style: context.appTextStyles.textTitle,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          controller: emailEC,
+                          onFieldSubmitted: (_) => _formSubmit(),
+                          validator: Validatorless.multiple([
+                            Validatorless.required('E-mail obrigatório'),
+                            Validatorless.email('E-mail inválido')
+                          ]),
+                          decoration: const InputDecoration(
+                            labelText: 'E-mail',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          controller: passwordEC,
+                          onFieldSubmitted: (_) => _formSubmit(),
+                          validator: Validatorless.required('Senha obrigatória'),
+                          decoration: InputDecoration(
+                            labelText: 'Senha',
+                            suffixIcon: IconButton(
+                              icon: Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  obscureText = !obscureText;
+                                });
+                              },
+                            ),
+                          ),
+                          obscureText: obscureText,
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        SizedBox(
+                          height: 50,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _formSubmit;
+                            },
+                            child: const Text('Entrar'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
