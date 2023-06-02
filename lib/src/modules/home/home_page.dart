@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/ui/helpers/loader.dart';
 import '../../core/ui/helpers/messages.dart';
 import '../../core/ui/styles/app_text_styles.dart';
+import '../templates/base_layout.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,10 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with Loader, Messages {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-      ),
+    return BaseLayout(
       body: Column(
         children: [
           Text(
@@ -42,14 +40,6 @@ class _HomePageState extends State<HomePage> with Loader, Messages {
             child: ElevatedButton(onPressed: () {}, child: const Text('Botão')),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          showLoader();
-          await Future.delayed(const Duration(seconds: 2));
-          hideLoader();
-          showSuccess('Carregou corretamente');
-        },
       ),
     );
   }

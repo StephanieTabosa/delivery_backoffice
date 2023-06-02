@@ -13,6 +13,7 @@ class AppColors {
   Color get primary => const Color(0XFF007D21);
   Color get secondary => const Color(0XFFFFAB18);
   Color get black => const Color(0XFF140e0E);
+  Color get grey => const Color(0XFFE5E5E5);
 }
 
 extension ColorsAppExtension on BuildContext {

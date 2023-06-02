@@ -173,9 +173,7 @@ class _LoginPageState extends State<LoginPage> with Loader, Messages {
                           height: 50,
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
-                              _formSubmit;
-                            },
+                            onPressed: _formSubmit,
                             child: const Text('Entrar'),
                           ),
                         ),
